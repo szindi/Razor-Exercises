@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = string.Format("{0}: Basic form Processing", "Exercise01");
+}
+
+@section banner {
+    <h1>@Page.Title</h1>
+}
+<form>
+    <div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div></div>
+        <div class="offset-1">
+            <button type="submit" id="theButton" name="theButton"
+                    value="submit" class="btn btn-primary">
+                Submit
+            </button>&nbsp;&nbsp;
+            <button type="submit" id="theButton" name="theButton"
+                    value="reset" class="btn btn-light">
+                Reset
+            </button>
+        </div>
+    </div>
+</form>
