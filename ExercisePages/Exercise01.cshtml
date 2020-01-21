@@ -3,6 +3,7 @@
     Page.Title = string.Format("{0}: Basic form Processing", "Exercise01");
     var myname = Request.Form["dataentry"];
     var thebutton = Request.Form["theButton"];
+    string choices = "";
 }
 
 @section banner {
@@ -16,10 +17,16 @@
             <input type="text" id="dataentry" name="dataentry"
                    value="@myname" />
         </div>
-        <div>
-
+        <div class="col">
+            <label id="meal-items-label"><strong>Choice your meal items</strong></label>
+            <input type="checkbox" id="meal-items" name="meal-items" value="steak"
+                   @(Array.IndexOf(choices.Split(','), "Steak") >= 0? "checked" : "") />Steak<br />
+            <input type="checkbox" id="meal-items" name="meal-items" value="seafood"
+                   @(Array.IndexOf(choices.Split(','), "Seafood") >= 0? "checked" : "") />Seafood<br />
+            <input type="checkbox" id="meal-items" name="meal-items" value="vegtables"
+                   @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0? "checked" : "") />Vegtables<br />
+        </div">
         </div>
-    </div>
     <div class="row">
         <div class="offset-1">
             <button type="submit" id="theButton" name="theButton"
