@@ -1,22 +1,26 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("{0}: Basic form Processing", "Exercise01");
+    var myname = Request.Form["dataentry"];
+    var thebutton = Request.Form["theButton"];
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
-<form>
-    <div>
-        <div>
 
+<form>
+    <div class="row">
+        <div class="offset-1">
+            <label id="label1" for="dataentry">Customer Name:</label>&nbsp;&nbsp;
+            <input type="text" id="dataentry" name="dataentry"
+                   value="@myname" />
         </div>
         <div>
 
         </div>
     </div>
     <div class="row">
-        <div></div>
         <div class="offset-1">
             <button type="submit" id="theButton" name="theButton"
                     value="submit" class="btn btn-primary">
