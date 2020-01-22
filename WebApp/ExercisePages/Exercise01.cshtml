@@ -1,8 +1,7 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("{0}: Basic form Processing", "Exercise01");
-    var myname = Request.Form["dataentry"];
-    var thebutton = Request.Form["theButton"];
+    var myname = "";
     string choices = "";
 }
 
@@ -12,17 +11,29 @@
 
 @if (IsPost)
 {
+    
+    var thebutton = Request.Form["theButton"];
+    myname = Request.Form["dataentry"];
+    choices = Request.Form["meal-items"];
     if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
-        if (string.IsNullOrEmpty(myname))
+        <p>choices: @choices</p>
+        //No name, No food
+        if (string.IsNullOrEmpty(myname) && choices.IsEmpty())
         {
-            //No name
-            <p>No name entered</p>
-        }
-        else if (choices.IsEmpty())
-        {
-            <p>No food selected made</p>
+            <p style="color: firebrick;">Nothing was entered</p>
             choices = "";
+        }
+        //Name, no food
+        else if (!string.IsNullOrEmpty(myname) && choices.IsEmpty())
+        {
+            <p style="color: firebrick;">@myname, you didn't select any food.</p>
+            choices = "";
+        }
+        //No name, food
+        else if (string.IsNullOrEmpty(myname) && !choices.IsEmpty())
+        {
+            <p style="color: firebrick;">A name needs to be entered to select food</p>
         }
         else
         {
@@ -30,9 +41,9 @@
             <p>
                 @myname, likes:
                 <ul>
-                    @foreach (var menuItem in choices.Split(','))
+                    @foreach(var menuItem in choices.Split(','))
                     {
-                        <li>@menuItem</li>
+                        <li> @menuItem </li>
                     }
                 </ul>
             </p>
@@ -58,7 +69,7 @@
         <div class="offset-1 col-xs-9">
             <label id="meal-items-label"><strong>Choice your meal items</strong></label><br/>
             <input type="checkbox" id="meal-items" name="meal-items" value="steak"
-                    @(Array.IndexOf(choices.Split(','), "Steak") >= 0 ? "checked" : "") /> Steak<br />
+                    @(Array.IndexOf(choices.Split(','), "Steak") >= 0?"checked":"")/> Steak<br />
             <input type="checkbox" id="meal-items" name="meal-items" value="seafood"
                     @(Array.IndexOf(choices.Split(','), "Seafood") >= 0 ? "checked" : "") /> Seafood<br />
             <input type="checkbox" id="meal-items" name="meal-items" value="vegtables"
