@@ -10,7 +10,6 @@
     <h1>@Page.Title</h1>
 }
 
-@*TODO Code not working*@
 @if (IsPost)
 {
     if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
@@ -19,11 +18,10 @@
         {
             //No name
             <p>No name entered</p>
-            myname = "";
         }
         else if (choices.IsEmpty())
         {
-            <p>No choices made</p>
+            <p>No food selected made</p>
             choices = "";
         }
         else
@@ -47,11 +45,10 @@
         choices = "";
         <p>You pressed the reset button</p>
     }
-
 }
 
 @*TODO SPACING*@
-<form>
+<form id="theform" method="post">
     <div class="column">
         <div class="row">
             <div class="offset-1">
@@ -62,11 +59,11 @@
             <div class="offset-1">
                 <label id="meal-items-label"><strong>Choice your meal items</strong></label><br/>
                 <input type="checkbox" id="meal-items" name="meal-items" value="steak"
-                       @(Array.IndexOf(choices.Split(','), "Steak") >= 0 ? "checked" : "") />Steak<br />
+                       @(Array.IndexOf(choices.Split(','), "Steak") >= 0 ? "checked" : "") /> Steak<br />
                 <input type="checkbox" id="meal-items" name="meal-items" value="seafood"
-                       @(Array.IndexOf(choices.Split(','), "Seafood") >= 0 ? "checked" : "") />Seafood<br />
+                       @(Array.IndexOf(choices.Split(','), "Seafood") >= 0 ? "checked" : "") /> Seafood<br />
                 <input type="checkbox" id="meal-items" name="meal-items" value="vegtables"
-                       @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0 ? "checked" : "") />Vegtables<br /><br />
+                       @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0 ? "checked" : "") /> Vegtables<br /><br />
             </div>
         </div>
         <div class="row offset-1">
