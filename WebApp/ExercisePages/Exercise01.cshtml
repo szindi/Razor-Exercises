@@ -10,23 +10,27 @@
     <h1>@Page.Title</h1>
 }
 
+@*TODO Code not working*@
 @if (IsPost)
 {
-    if (thebutton.Equals("submit"))
+    if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
         if (string.IsNullOrEmpty(myname))
         {
             //No name
+            <p>No name entered</p>
+            myname = "";
         }
         else if (choices.IsEmpty())
         {
-            //No choices
+            <p>No choices made</p>
+            choices = "";
         }
         else
         {
             //Name and choices
             <p>
-                <!--Statement and list-->
+                @myname, likes:
                 <ul>
                     @foreach (var menuItem in choices.Split(','))
                     {
@@ -40,6 +44,7 @@
     else
     {
         myname = "";
+        choices = "";
         <p>You pressed the reset button</p>
     }
 
