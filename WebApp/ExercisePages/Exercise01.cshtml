@@ -17,7 +17,6 @@
     choices = Request.Form["meal-items"];
     if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
-        <p>choices: @choices</p>
         //No name, No food
         if (string.IsNullOrEmpty(myname) && choices.IsEmpty())
         {
