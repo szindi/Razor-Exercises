@@ -10,11 +10,40 @@
     <h1>@Page.Title</h1>
 }
 
-@{if (IsPost)
+@if (IsPost)
+{
+    if (thebutton.Equals("submit"))
     {
+        if (string.IsNullOrEmpty(myname))
+        {
+            //No name
+        }
+        else if (choices.IsEmpty())
+        {
+            //No choices
+        }
+        else
+        {
+            //Name and choices
+            <p>
+                <!--Statement and list-->
+                <ul>
+                    @foreach (var menuItem in choices.Split(','))
+                    {
+                        <li>@menuItem</li>
+                    }
+                </ul>
+            </p>
 
+        }
+    }
+    else
+    {
+        myname = "";
+        <p>You pressed the reset button</p>
+    }
 
-    }}
+}
 
 @*TODO SPACING*@
 <form>
