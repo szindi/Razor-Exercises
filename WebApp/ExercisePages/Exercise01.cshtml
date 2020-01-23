@@ -36,7 +36,7 @@
 }
 
     @if (IsPost)
-    {
+     {
 
         var thebutton = Request.Form["theButton"];
         myname = Request.Form["dataentry"];
@@ -67,13 +67,12 @@
                 @ToUpperName(myname), I see that you have the following meal entries:
                 <ul>
                     @foreach(var menuItem in choices.Split(','))
-                        {
+                     {
                         <li> @menuItem </li>
-                    }
+                     }
                 </ul>
             </p>
-    
-        }
+            }
         }
         else
         {
@@ -81,7 +80,7 @@
             choices = "";
         <p>You pressed the reset button</p>
         }
-    }
+     }
 
 @*TODO SPACING*@
 <form id="theform" method="post">
