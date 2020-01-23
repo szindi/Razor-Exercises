@@ -68,7 +68,7 @@
                 <ul>
                     @foreach(var menuItem in choices.Split(','))
                      {
-                        <li> @menuItem </li>
+                        <li> @ToUpperName(menuItem) </li>
                      }
                 </ul>
             </p>
@@ -86,7 +86,7 @@
 <form id="theform" method="post">
     
     <div class="row">
-        <div class="col-xs-3">
+        <div class="col-xs-3 col-lg-3">
             &emsp;&emsp;
             <label id="label1" for="dataentry">Customer Name:</label><!--&nbsp;&nbsp;-->
             <br />
@@ -94,14 +94,15 @@
             <input type="text" id="dataentry" name="dataentry"
                    value="@myname" />
         </div>
-        <div class="offset-1 col-xs-9">
-            <label id="meal-items-label"><strong>Choice your meal items</strong></label><br/>
-            <input type="checkbox" id="meal-items" name="meal-items" value="steak"
-                    @(Array.IndexOf(choices.Split(','), "Steak") >= 0?"checked":"")/> Steak<br />
-            <input type="checkbox" id="meal-items" name="meal-items" value="seafood"
-                    @(Array.IndexOf(choices.Split(','), "Seafood") >= 0 ? "checked" : "") /> Seafood<br />
-            <input type="checkbox" id="meal-items" name="meal-items" value="vegtables"
-                    @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0 ? "checked" : "") /> Vegtables<br /><br />
+        <div class="col-xs-9 col-lg-3">
+            &emsp;&emsp;
+            <label id="meal-items-label"><strong>Choice your meal items</strong></label><br />
+            &emsp;&emsp;&emsp;<input type="checkbox" id="meal-items" name="meal-items" value="steak"
+                                     @(Array.IndexOf(choices.Split(','), "Steak") >= 0 ? "checked" : "") /> Steak<br />
+            &emsp;&emsp;&emsp;<input type="checkbox" id="meal-items" name="meal-items" value="seafood"
+                                     @(Array.IndexOf(choices.Split(','), "Seafood") >= 0 ? "checked" : "") /> Seafood<br />
+            &emsp;&emsp;&emsp;<input type="checkbox" id="meal-items" name="meal-items" value="vegtables"
+                                     @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0 ? "checked" : "") /> Vegtables<br /><br />
         </div>
     </div>
     <div class="row">
