@@ -1,8 +1,8 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("{0}: Basic form Processing", "Exercise01");
-    var myname = "";
-    string choices = "";
+    var customerName = "";
+    string foodChoices = "";
 }
 @functions{
     string ToUpperName(string name)
@@ -35,52 +35,52 @@
     <h1>@Page.Title</h1>
 }
 
-    @if (IsPost)
-     {
+@if (IsPost)
+{
 
-        var thebutton = Request.Form["theButton"];
-        myname = Request.Form["dataentry"];
-        choices = Request.Form["meal-items"];
-        if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    var thebutton = Request.Form["theButton"];
+    customerName = Request.Form["dataentry"];
+    foodChoices = Request.Form["meal-items"];
+    if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    {
+        //No name, No food
+        if (string.IsNullOrEmpty(customerName) && foodChoices.IsEmpty())
         {
-            //No name, No food
-            if (string.IsNullOrEmpty(myname) && choices.IsEmpty())
-            {
             <p style="color: firebrick;">Nothing was entered</p>
-            choices = "";
-            }
-            //Name, no food
-            else if (!string.IsNullOrEmpty(myname) && choices.IsEmpty())
-            {
-                <p style="color: firebrick;">@ToUpperName(myname), you didn't select any food.</p>
-                choices = "";
-            }
-            //No name, food
-            else if (string.IsNullOrEmpty(myname) && !choices.IsEmpty())
-            {
+            foodChoices = "";
+        }
+        //Name, no food
+        else if (!string.IsNullOrEmpty(customerName) && foodChoices.IsEmpty())
+        {
+                <p style="color: firebrick;">@ToUpperName(customerName), you didn't select any food.</p>
+            foodChoices = "";
+        }
+        //No name, food
+        else if (string.IsNullOrEmpty(customerName) && !foodChoices.IsEmpty())
+        {
             <p style="color: firebrick;">A name needs to be entered to select food</p>
-            }
-            else
-            {
-            //Name and choices
-            <p>
-                @ToUpperName(myname), I see that you have the following meal entries:
-                <ul>
-                    @foreach(var menuItem in choices.Split(','))
-                     {
-                        <li> @ToUpperName(menuItem) </li>
-                     }
-                </ul>
-            </p>
-            }
         }
         else
         {
-            myname = "";
-            choices = "";
-        <p>You pressed the reset button</p>
+            //Name and choices
+            <p>
+                @ToUpperName(customerName), I see that you have the following meal entries:
+                <ul>
+                    @foreach(var menuItem in foodChoices.Split(','))
+                    {
+                        <li> @ToUpperName(menuItem) </li>
+                    }
+                </ul>
+            </p>
         }
-     }
+    }
+    else
+    {
+        customerName = "";
+        foodChoices = "";
+        <p>You pressed the reset button</p>
+    }
+}
 
 @*TODO SPACING*@
 <form id="theform" method="post">
@@ -92,17 +92,17 @@
             <br />
             &emsp;&emsp;
             <input type="text" id="dataentry" name="dataentry"
-                   value="@myname" />
+                   value="@customerName" />
         </div>
         <div class="col-xs-9 col-lg-3">
             &emsp;&emsp;
             <label id="meal-items-label"><strong>Choice your meal items</strong></label><br />
             &emsp;&emsp;&emsp;<input type="checkbox" id="meal-items" name="meal-items" value="steak"
-                                     @(Array.IndexOf(choices.Split(','), "Steak") >= 0 ? "checked" : "") /> Steak<br />
+                                     @(Array.IndexOf(foodChoices.Split(','), "Steak") >= 0 ? "checked" : "") /> Steak<br />
             &emsp;&emsp;&emsp;<input type="checkbox" id="meal-items" name="meal-items" value="seafood"
-                                     @(Array.IndexOf(choices.Split(','), "Seafood") >= 0 ? "checked" : "") /> Seafood<br />
+                                     @(Array.IndexOf(foodChoices.Split(','), "Seafood") >= 0 ? "checked" : "") /> Seafood<br />
             &emsp;&emsp;&emsp;<input type="checkbox" id="meal-items" name="meal-items" value="vegtables"
-                                     @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0 ? "checked" : "") /> Vegtables<br /><br />
+                                     @(Array.IndexOf(foodChoices.Split(','), "Vegtables") >= 0 ? "checked" : "") /> Vegtables<br /><br />
         </div>
     </div>
     <div class="row">
