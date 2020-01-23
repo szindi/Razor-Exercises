@@ -4,66 +4,96 @@
     var myname = "";
     string choices = "";
 }
+@functions{
+    string ToUpperName(string name)
+    {
+        name = name.Trim();
+        if (name.Contains(" "))
+        {
+            string[] nameArray = name.Split(' ');
+            for (int i = 0; i < nameArray.Length; i++)
+            {
+                nameArray[i] = ToUpperName(nameArray[i]);
+            }
 
-@section banner {
+            return String.Join(" ", nameArray);
+        }
+        else if (name.Length > 1)
+        {
+            name = char.ToUpper(name[0]) + name.Substring(1);
+        }
+        else if (name.Length == 1)
+        {
+            name = name.ToUpper();
+        }
+
+        return name;
+    }
+    }
+
+    @section banner {
     <h1>@Page.Title</h1>
 }
 
-@if (IsPost)
-{
-    
-    var thebutton = Request.Form["theButton"];
-    myname = Request.Form["dataentry"];
-    choices = Request.Form["meal-items"];
-    if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    @if (IsPost)
     {
-        //No name, No food
-        if (string.IsNullOrEmpty(myname) && choices.IsEmpty())
+
+        var thebutton = Request.Form["theButton"];
+        myname = Request.Form["dataentry"];
+        choices = Request.Form["meal-items"];
+        if (thebutton.Equals("submit", StringComparison.OrdinalIgnoreCase))
         {
+            //No name, No food
+            if (string.IsNullOrEmpty(myname) && choices.IsEmpty())
+            {
             <p style="color: firebrick;">Nothing was entered</p>
             choices = "";
-        }
-        //Name, no food
-        else if (!string.IsNullOrEmpty(myname) && choices.IsEmpty())
-        {
-            <p style="color: firebrick;">@myname, you didn't select any food.</p>
-            choices = "";
-        }
-        //No name, food
-        else if (string.IsNullOrEmpty(myname) && !choices.IsEmpty())
-        {
+            }
+            //Name, no food
+            else if (!string.IsNullOrEmpty(myname) && choices.IsEmpty())
+            {
+                <p style="color: firebrick;">@ToUpperName(myname), you didn't select any food.</p>
+                choices = "";
+            }
+            //No name, food
+            else if (string.IsNullOrEmpty(myname) && !choices.IsEmpty())
+            {
             <p style="color: firebrick;">A name needs to be entered to select food</p>
-        }
-        else
-        {
+            }
+            else
+            {
             //Name and choices
             <p>
-                @myname, I see that you have the following meal entries:
+                @ToUpperName(myname), I see that you have the following meal entries:
                 <ul>
                     @foreach(var menuItem in choices.Split(','))
-                    {
+                        {
                         <li> @menuItem </li>
                     }
                 </ul>
             </p>
-
+    
+        }
+        }
+        else
+        {
+            myname = "";
+            choices = "";
+        <p>You pressed the reset button</p>
         }
     }
-    else
-    {
-        myname = "";
-        choices = "";
-        <p>You pressed the reset button</p>
-    }
-}
 
 @*TODO SPACING*@
 <form id="theform" method="post">
+    
     <div class="row">
-        <div class="offset-1 col-xs-3">
-            <label id="label1" for="dataentry">Customer Name:</label>&nbsp;&nbsp;
+        <div class="col-xs-3">
+            &emsp;&emsp;
+            <label id="label1" for="dataentry">Customer Name:</label><!--&nbsp;&nbsp;-->
+            <br />
+            &emsp;&emsp;
             <input type="text" id="dataentry" name="dataentry"
-                    value="@myname" />
+                   value="@myname" />
         </div>
         <div class="offset-1 col-xs-9">
             <label id="meal-items-label"><strong>Choice your meal items</strong></label><br/>
@@ -75,7 +105,8 @@
                     @(Array.IndexOf(choices.Split(','), "Vegtables") >= 0 ? "checked" : "") /> Vegtables<br /><br />
         </div>
     </div>
-    <div class="row offset-1">
+    <div class="row">
+        &emsp;
         <button type="submit" id="theButton" name="theButton"
                 value="submit" class="btn btn-primary">
             Submit
