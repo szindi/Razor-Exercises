@@ -1,8 +1,40 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = string.Format("Razor - {0}", "Exercise 02");
+    Page.Title = string.Format("Exercise 2: Database Query");
+
+    //Output Variables
+    string artistName = "";
+    string albumTitle = "";
+    string realseYear = "";
+    string recordLabel = "";
+
+    //input variables
+    var artistId = Request.Form["ArtistID"];
+    var theButton = Request.Form["theButton"];
+
+    //make sure artistId is not null
+    if (string.IsNullOrEmpty(artistId))
+    {
+        artistId = "0";
+    }
+
+    //database
+    var db = Database.Open("CHINOOK");
+
+    //sql query
+    var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0" + '%';
+
+    //results
+    var searchByNameResults = db.Query(CHINOOK, );
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+@if (IsPost)
+{
+    //ToDo
+}
+
+@*TODO chinoo.db*@
