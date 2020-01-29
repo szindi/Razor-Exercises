@@ -10,10 +10,33 @@
         Response.Redirect("Exercise02_A.cshtml");
     }
 
-    //var db = Database.Open("CHINOOK");
+    var db = Database.Open("CHINOOK");
     var searchByArtistNameQuery = @"SELECT ArtistId, Name FROM Artists WHERE Name like @0 ORDER BY Name";
+    var searchByArtistNameResult = db.Query(searchByArtistNameQuery, artistName);
+
+    //TODO Check that a result was returned
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+<form id="theform" method="post">
+    <div class="row">
+        <div class="offset-1">
+            <label id="lblCodingSamples">Select from the list:</label>&nbsp;&nbsp;
+            <select id="CodingSamples" name="CodingSamples">
+                @{ 
+                    foreach (var artist in searchByArtistNameResult)
+                    {
+                        <option value="@artist.ArtistID"> @artist.Name </option>
+                    }
+                }
+            </select>&nbsp;&nbsp;
+            <button type="submit" id="theButton" name="theButton" value="submit"
+                    class="btn btn-primary">
+                Go To ...
+            </button>
+        </div>
+    </div>
+</form>
