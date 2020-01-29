@@ -2,6 +2,9 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Razor - {0}", "Exercise 02");
 
+    var theButton = Request.Form["theButton"];
+    string artistId = Request.Form["ArtistId"];
+
     var artistName = Request.QueryString["artistName"];
 
     //if results are empty return to seach page
@@ -21,11 +24,19 @@
     <h1>@Page.Title</h1>
 }
 
+@if (IsPost)
+{
+    if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    {
+        Response.Redirect("Exercise02_C?artistId=" + artistId);
+    }
+}
+
 <form id="theform" method="post">
     <div class="row">
         <div class="offset-1">
-            <label id="lblCodingSamples">Select from the list:</label>&nbsp;&nbsp;
-            <select id="CodingSamples" name="CodingSamples">
+            <label id="ArtistNameLabel">Select from the list:</label>&nbsp;&nbsp;
+            <select id="ArtistId" name="ArtistId">
                 @{ 
                     foreach (var artist in searchByArtistNameResult)
                     {
@@ -35,7 +46,7 @@
             </select>&nbsp;&nbsp;
             <button type="submit" id="theButton" name="theButton" value="submit"
                     class="btn btn-primary">
-                Go To ...
+                Find Albums
             </button>
         </div>
     </div>
