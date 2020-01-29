@@ -10,10 +10,10 @@
     var db = Database.Open("CHINOOK");
 
     //sql query
-    var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0" + '%';
+    var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like @0";
 
     //results
-    var searchByNameResults = db.Query(searchByNameQuery, artistName);
+    var searchByNameResults = db.Query(searchByNameQuery, "%" + artistName + "%");
 }
 
 @section banner {
@@ -24,9 +24,9 @@
 {
     if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
-        if (searchByNameResults == null)
+        if (searchByNameResults.Count() == 0)
         {
-            <p>No Artist Found</p>
+            <p style="color:firebrick;">No Artist Found</p>
             artistName = "";
         }
         else
