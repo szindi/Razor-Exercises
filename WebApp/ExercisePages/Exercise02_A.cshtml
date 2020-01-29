@@ -7,14 +7,14 @@
     string artistName = Request.Form["ArtistName"];
 
     //database
-    //var db = Database.Open("CHINOOK");
+    var db = Database.Open("CHINOOK");
 
     //sql query
     var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0" + '%';
 
     //results
     var searchByNameResults = "";
-    //var searchByNameResults = db.Query(searchByNameQuery, artistName);
+    var searchByNameResults = db.Query(searchByNameQuery, artistName);
 }
 
 @section banner {
