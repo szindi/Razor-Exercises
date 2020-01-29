@@ -3,6 +3,7 @@
     Page.Title = string.Format("Exercise 2: Database Query");
 
     //Output Variables
+    var theButton = Request.Form["theButton"];
     string artistName = Request.Form["ArtistName"];
 
     //database
@@ -12,6 +13,7 @@
     var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0" + '%';
 
     //results
+    var searchByNameResults = "";
     //var searchByNameResults = db.Query(searchByNameQuery, artistName);
 }
 
@@ -21,12 +23,34 @@
 
 @if (IsPost)
 {
-    //ToDo
+    if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    {
+        if (searchByNameResults == null)
+        {
+            <p>No Artist Found</p>
+            artistName = "";
+        }
+        else
+        {
+
+        }
+    }
 }
 
 <form id="theform" method="post">
     <div class="offset-1 row">
         <label id="ArtistNameLabel" for="ArtistName">Enter an Artist Name: </label> &nbsp;&nbsp;
         <input type="text" id="ArtistName" name="ArtistName" value="@artistName"/>
+    </div>
+    <br/>
+    <div class="offset-1 row">
+        <button type="submit" id="theButton" name="theButton"
+                value="submit" class="btn btn-primary">
+            Search
+        </button>&nbsp;&nbsp;
+        <button type="submit" id="theButton" name="theButton"
+                value="reset" class="btn btn-light">
+            Clear
+        </button>
     </div>
 </form>
