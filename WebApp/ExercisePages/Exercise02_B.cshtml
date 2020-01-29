@@ -31,7 +31,11 @@
         Response.Redirect("Exercise02_C?artistId=" + artistId);
     }
 }
-<p>@artistName</p>
+else
+{
+    Response.Redirect("Exercise02_A");
+}
+
 <form id="theform" method="post">
     <div class="row">
         <div class="offset-1">
