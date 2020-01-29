@@ -3,16 +3,16 @@
     Page.Title = string.Format("Exercise 2: Database Query");
 
     //Output Variables
-    string artistName = "";
+    string artistName = Request.Form["ArtistName"];
 
     //database
-    var db = Database.Open("CHINOOK");
+    //var db = Database.Open("CHINOOK");
 
     //sql query
     var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0" + '%';
 
     //results
-    var searchByNameResults = db.Query(searchByNameQuery, );
+    //var searchByNameResults = db.Query(searchByNameQuery, artistName);
 }
 
 @section banner {
@@ -24,7 +24,9 @@
     //ToDo
 }
 
-<form id="theform method="post">
-    <div class="row">
-        </div>
-    </form>"
+<form id="theform" method="post">
+    <div class="offset-1 row">
+        <label id="ArtistNameLabel" for="ArtistName">Enter an Artist Name: </label> &nbsp;&nbsp;
+        <input type="text" id="ArtistName" name="ArtistName" value="@artistName"/>
+    </div>
+</form>
