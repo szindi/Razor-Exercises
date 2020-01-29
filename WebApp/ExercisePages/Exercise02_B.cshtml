@@ -11,7 +11,7 @@
     }
 
     var db = Database.Open("CHINOOK");
-    var searchByArtistNameQuery = @"SELECT ArtistId, Name FROM Artists WHERE Name like @0 ORDER BY Name";
+    var searchByArtistNameQuery = @"SELECT ArtistId, Name FROM Artists WHERE Name like '%' + @0 + '%' ORDER BY Name";
     var searchByArtistNameResult = db.Query(searchByArtistNameQuery, artistName);
 
     //TODO Check that a result was returned
