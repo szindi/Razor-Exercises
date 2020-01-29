@@ -4,19 +4,6 @@
 
     //Output Variables
     string artistName = "";
-    string albumTitle = "";
-    string realseYear = "";
-    string recordLabel = "";
-
-    //input variables
-    var artistId = Request.Form["ArtistID"];
-    var theButton = Request.Form["theButton"];
-
-    //make sure artistId is not null
-    if (string.IsNullOrEmpty(artistId))
-    {
-        artistId = "0";
-    }
 
     //database
     var db = Database.Open("CHINOOK");
@@ -25,7 +12,7 @@
     var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0" + '%';
 
     //results
-    var searchByNameResults = db.Query(CHINOOK, );
+    var searchByNameResults = db.Query(searchByNameQuery, );
 }
 
 @section banner {
@@ -37,4 +24,7 @@
     //ToDo
 }
 
-@*TODO chinoo.db*@
+<form id="theform method="post">
+    <div class="row">
+        </div>
+    </form>"
