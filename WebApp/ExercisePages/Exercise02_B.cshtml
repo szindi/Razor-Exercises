@@ -1,6 +1,17 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Razor - {0}", "Exercise 02");
+
+    var artistName = Request.QueryString["artistName"];
+
+    //if results are empty return to seach page
+    if (string.IsNullOrEmpty(artistName))
+    {
+        Response.Redirect("Exercise02_A.cshtml");
+    }
+
+    //var db = Database.Open("CHINOOK");
+    var searchByArtistNameQuery = @"SELECT ArtistId, Name FROM Artists WHERE Name like @0 ORDER BY Name";
 }
 
 @section banner {
