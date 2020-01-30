@@ -10,10 +10,10 @@
     }
 
     var db = Database.Open("CHINOOK");
-    var searchArtistsByArtistIdQuery = @"SELECT Name FROM Artists WHERE ArtistId = @0";
-    var searchAlbumsByArtistIdQuery = @"SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0";
-    var artist = db.QuerySingle(searchArtistsByArtistIdQuery, artistId);
-    var albums = db.Query(searchAlbumsByArtistIdQuery, artistId);
+    var searchArtists = @"SELECT Name FROM Artists WHERE ArtistId = @0";
+    var searchAlbums = @"SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0";
+    var artist = db.QueryValue(searchArtists, artistId);
+    var albums = db.Query(searchAlbums, artistId);
 
     var gridinstance = new WebGrid(albums);
 }
@@ -23,7 +23,7 @@
 }
 
 <div class="offset-1">
-    <h3>Artist: @artist</h3>
+    <h3 class="col-11">Artist: @artist</h3>
     <div class="col-11">
         @gridinstance.GetHtml(
             tableStyle: "table table-striped table-bordered table-hover",
