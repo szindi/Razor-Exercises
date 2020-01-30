@@ -46,7 +46,8 @@
         <div class="offset-1">
             <label id="ArtistNameLabel">Select from the list:</label>&nbsp;&nbsp;
             <select id="ArtistId" name="ArtistId">
-                @{ 
+            <option value="-1">Select</option>    
+            @{ 
                     foreach (var artist in searchByArtistNameResult)
                     {
                         <option value="@artist.ArtistID"> @artist.Name </option>
