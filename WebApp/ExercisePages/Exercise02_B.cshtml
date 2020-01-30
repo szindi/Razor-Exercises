@@ -28,7 +28,11 @@
 
 @if (IsPost)
 {
-    if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    if (int.Parse(artistId) < 1)
+    {
+        <p style="color:firebrick">No artist selected</p>
+    }
+    else if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
         if (searchAlbumsByArtistIdResult.Count() == 0)
         {
@@ -46,8 +50,8 @@
         <div class="offset-1">
             <label id="ArtistNameLabel">Select from the list:</label>&nbsp;&nbsp;
             <select id="ArtistId" name="ArtistId">
-            <option value="-1">Select</option>    
-            @{ 
+                <option value="-1">Select</option>
+                @{
                     foreach (var artist in searchByArtistNameResult)
                     {
                         <option value="@artist.ArtistID"> @artist.Name </option>
