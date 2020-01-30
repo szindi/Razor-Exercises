@@ -48,18 +48,18 @@
 <form id="theform" method="post">
     <div class="row">
         <div class="offset-1">
-            <label id="ArtistNameLabel">Select from the list:</label>&nbsp;&nbsp;
-            <select id="ArtistId" name="ArtistId">
-                <option value="-1">Select</option>
+            <label class="col-xs-4" id="ArtistNameLabel">Select from the list:</label>&nbsp;&nbsp;
+            <select class="col-xs-4" id="ArtistId" name="ArtistId">
+                <option class="col-xs-4" value="-1">Select</option>
                 @{
                     foreach (var artist in searchByArtistNameResult)
                     {
                         <option value="@artist.ArtistID"> @artist.Name </option>
                     }
                 }
-            </select>&nbsp;&nbsp;
+            </select >&nbsp;&nbsp;
             <button type="submit" id="theButton" name="theButton" value="submit"
-                    class="btn btn-primary">
+                    class="btn btn-primary col-xl-s">
                 Find Albums
             </button>
         </div>
