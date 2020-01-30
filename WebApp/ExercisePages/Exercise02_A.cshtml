@@ -22,7 +22,11 @@
 
 @if (IsPost)
 {
-    if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
+    if (artistName == "")
+    {
+        <p class="offset-1" style="color:firebrick;">No Artist Entered</p>
+    }
+    else if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
         if (searchByNameResults.Count() == 0)
         {

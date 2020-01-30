@@ -30,13 +30,13 @@
 {
     if (int.Parse(artistId) < 1)
     {
-        <p style="color:firebrick">No artist selected</p>
+        <p class="offset-1" style="color:firebrick">No artist selected</p>
     }
     else if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
     {
         if (searchAlbumsByArtistIdResult.Count() == 0)
         {
-            <p style="color:firebrick">@artistName doesn't have any Albums</p>
+            <p class="offset-1" style="color:firebrick">@artistName doesn't have any Albums</p>
         }
         else
         {
