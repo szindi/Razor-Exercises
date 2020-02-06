@@ -35,7 +35,18 @@
         });
     }
 
-    //TODO Validation
+    //Validation
+    Validation.Add("ArtistID",
+        Validator.Required("The artist is required"));
+    Validation.Add("AlbumName",
+        Validator.Required("The title is required"),
+        Validator.StringLength(160, 1, "The title can be at most 160 characters"));
+    Validation.Add("ReleaseYear",
+        Validator.Integer("The year must be a number"),
+        Validator.Required("The year is required"),
+        Validator.Range(1950, DateTime.Today.Year, "The year is required"));
+    Validation.Add("RecordLabel",
+        Validator.StringLength(50, 0, "The label can be at most 50 characters"));
 }
 
 @section banner {
@@ -94,22 +105,22 @@
     <legend>Add an Album</legend>
     <form id="theform" method="post">
         <div class="row offset-1">
-            <label class="label" for="AlbumName">Title</label>
+            <label class="label" for="AlbumName">Title: </label>
             <span>@Html.TextBox("Title", albumName)</span>
             @Html.ValidationMessage("AlbumName")
         </div>
         <div class="row offset-1">
-            <label class="label" for="ArtistId">Artist</label>
+            <label class="label" for="ArtistId">Artist: </label>
             <span>@Html.DropDownList("ArtistId", artistsList)</span>
             @Html.ValidationMessage("ArtistId")
         </div>
         <div class="row offset-1">
-            <label class="label" for="ReleaseYear">Year</label>
+            <label class="label" for="ReleaseYear">Year: </label>
             <span>@Html.TextBox("ReleaseYear", releaseYear)</span>
             @Html.ValidationMessage("AlbumName")
         </div>
         <div class="row offset-1">
-            <label class="label" for="RecordLabel">Label</label>
+            <label class="label" for="RecordLabel">Label: </label>
             <span>@Html.TextBox("RecordLabel", recordLabel)</span>
             @Html.ValidationMessage("RecordLabel")
         </div>
@@ -126,3 +137,4 @@
         </div>
     </form>
 </fieldset>
+@Html.ValidationSummary()
