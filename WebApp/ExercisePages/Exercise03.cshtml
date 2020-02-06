@@ -97,6 +97,7 @@
             <label class="label" for="AlbumName">Title</label>
             <span>@Html.TextBox("Title", albumName)</span>
             @Html.ValidationMessage("AlbumName")
+        </div>
         <div class="row offset-1">
             <label class="label" for="ArtistId">Artist</label>
             <span>@Html.DropDownList("ArtistId", artistsList)</span>
@@ -112,6 +113,16 @@
             <span>@Html.TextBox("RecordLabel", recordLabel)</span>
             @Html.ValidationMessage("RecordLabel")
         </div>
+
+        <div class="row offset-1">
+            <button type="submit" id="TheButton" name="TheButton"
+                    class="btn btn-primary" value="Add">
+                Add
+            </button>
+            <button type="submit" id="TheButton" name="TheButton" formnovalidate
+                    class="btn" value="Clear">
+                Clear
+            </button>
         </div>
     </form>
 </fieldset>
