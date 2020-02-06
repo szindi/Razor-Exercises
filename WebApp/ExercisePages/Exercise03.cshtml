@@ -21,7 +21,7 @@
 
     //make results a list and populate it
     List<SelectListItem> artistsList = new List<SelectListItem>();
-    artistId.Add(new SelectListItem
+    artistsList.Add(new SelectListItem
     {
         Value = "0",
         Text = "Select Artist"
@@ -88,5 +88,30 @@
         releaseYear = "";
         recordLabel = "";
     }
-
 }
+
+<fieldset>
+    <legend>Add an Album</legend>
+    <form id="theform" method="post">
+        <div class="row offset-1">
+            <label class="label" for="AlbumName">Title</label>
+            <span>@Html.TextBox("Title", albumName)</span>
+            @Html.ValidationMessage("AlbumName")
+        <div class="row offset-1">
+            <label class="label" for="ArtistId">Artist</label>
+            <span>@Html.DropDownList("ArtistId", artistsList)</span>
+            @Html.ValidationMessage("ArtistId")
+        </div>
+        <div class="row offset-1">
+            <label class="label" for="ReleaseYear">Year</label>
+            <span>@Html.TextBox("ReleaseYear", releaseYear)</span>
+            @Html.ValidationMessage("AlbumName")
+        </div>
+        <div class="row offset-1">
+            <label class="label" for="RecordLabel">Label</label>
+            <span>@Html.TextBox("RecordLabel", recordLabel)</span>
+            @Html.ValidationMessage("RecordLabel")
+        </div>
+        </div>
+    </form>
+</fieldset>
