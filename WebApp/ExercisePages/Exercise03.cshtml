@@ -2,18 +2,40 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Exercise 2: Database Query");
 
-    //Output Variables
-    var theButton = Request.Form["theButton"];
-    string artistName = Request.Form["ArtistName"];
+    //album variables
+    var artistId = "0";
+    var albumName = "";
+    var releaseYear = "";
+    var recordLabel = "";
+
+    var theButton = Request.Form["TheButton"];
 
     //database
     var db = Database.Open("CHINOOK");
 
     //sql query
-    var searchByNameQuery = "SELECT ArtistId FROM Artists WHERE Name like '%' + @0 + '%'";
+    var getArtistsQuery = "SELECT ArtistId, Name FROM Artists ORDER BY Name";
 
     //results
-    var searchByNameResults = db.Query(searchByNameQuery, artistName);
+    var getArtistsResults = db.Query(getArtistsQuery);
+
+    //make results a list and populate it
+    List<SelectListItem> artistsList = new List<SelectListItem>();
+    artistId.Add(new SelectListItem
+    {
+        Value = "0",
+        Text = "Select Artist"
+    });
+    foreach (var artist in getArtistsResults)
+    {
+        artistsList.Add(new SelectListItem
+        {
+            Value = artist.ArtistId.ToString(),
+            Text = artist.Name
+        });
+    }
+
+    //TODO Validation
 }
 
 @section banner {
@@ -22,42 +44,49 @@
 
 @if (IsPost)
 {
-    if (artistName == "")
+    //get form fields
+    artistId = Request.Form["ArtistId"];
+    albumName = Request.Form["AlbumName"];
+    releaseYear = Request.Form["ReleaseYear"];
+    recordLabel = Request.Form["RecordLabel"];
+
+    if (theButton.Equals("add", StringComparison.OrdinalIgnoreCase))
     {
-        <p class="offset-1" style="color:firebrick;">No Artist Entered</p>
-    }
-    else if (theButton.Equals("submit", StringComparison.OrdinalIgnoreCase))
-    {
-        if (searchByNameResults.Count() == 0)
+        //check if form fields are valid
+        if (Validation.IsValid())
         {
-            <p class="offset-1" style="color:firebrick;">No Artist Found</p>
-            artistName = "";
-        }
-        else
-        {
-            Response.Redirect("Exercise02_B?artistName=" + artistName);
+            //trycatch db query
+            try
+            {
+                var createAlbum = "INSERT INTO Albums (Title, ArtistId, ReleaseYear, ReleaseLabel" +
+                                  " VALUES(@0, @1, @2, @3)";
+                db.Execute(createAlbum, albumName,
+                    artistId.Equals("0") ? null : artistId,
+                    releaseYear,
+                    string.IsNullOrEmpty(recordLabel) ? null : recordLabel);
+                //successful message
+                <div class="col-12 text-center">
+                    <p style="color:green;">
+                        @albumName has been added
+                    </p>
+                </div>
+            }
+            catch (Exception ex)
+            {
+                <div class="col-12 text-center">
+                    <p style="color:firebrick;">
+                        Error: @ex.Message
+                    </p>
+                </div>
+            }
         }
     }
     else
     {
-        artistName = "";
+        artistId = "0";
+        albumName = "";
+        releaseYear = "";
+        recordLabel = "";
     }
-}
 
-<form id="theform" method="post">
-    <div class="offset-1 row">
-        <label id="ArtistNameLabel" for="ArtistName">Enter an Artist Name: </label> &nbsp;&nbsp;
-        <input type="text" id="ArtistName" name="ArtistName" value="@artistName"/>
-    </div>
-    <br/>
-    <div class="offset-1 row">
-        <button type="submit" id="theButton" name="theButton"
-                value="submit" class="btn btn-primary">
-            Search
-        </button>&nbsp;&nbsp;
-        <button type="submit" id="theButton" name="theButton"
-                value="reset" class="btn btn-light">
-            Clear
-        </button>
-    </div>
-</form>
+}
