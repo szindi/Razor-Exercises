@@ -3,50 +3,29 @@
     Page.Title = string.Format("Exercise 2: Database Query");
 
     //album variables
+    var title = "";
     var artistId = "0";
-    var albumName = "";
     var releaseYear = "";
-    var recordLabel = "";
-
-    var theButton = Request.Form["TheButton"];
+    var releaseLabel = "";
 
     //database
     var db = Database.Open("CHINOOK");
-
-    //sql query
-    var getArtistsQuery = "SELECT ArtistId, Name FROM Artists ORDER BY Name";
-
-    //results
-    var getArtistsResults = db.Query(getArtistsQuery);
-
-    //make results a list and populate it
-    List<SelectListItem> artistsList = new List<SelectListItem>();
-    artistsList.Add(new SelectListItem
-    {
-        Value = "0",
-        Text = "Select Artist"
-    });
-    foreach (var artist in getArtistsResults)
-    {
-        artistsList.Add(new SelectListItem
-        {
-            Value = artist.ArtistId.ToString(),
-            Text = artist.Name
-        });
-    }
+    //get dropdown information
+    var artistQuery = "SELECT ArtistId, Name FROM Artists ORDER BY Name";
+    var artistList = db.Query(artistQuery);
 
     //Validation
-    Validation.Add("ArtistID",
-        Validator.Required("The artist is required"));
-    Validation.Add("AlbumName",
-        Validator.Required("The title is required"),
-        Validator.StringLength(160, 1, "The title can be at most 160 characters"));
-    //Validation.Add("ReleaseYear",
-    //    Validator.Integer("The year must be a number"),
-    //    Validator.Required("The year is required"),
-    //    Validator.Range(1950, DateTime.Today.Year, "The year is required"));
-    //Validation.Add("RecordLabel",
-    //    Validator.StringLength(50, 0, "The label can be at most 50 characters"));
+    Validation.Add("Title",
+        Validator.Required("Title is required"),
+        Validator.StringLength(160, 1, "Title is limited to 160 characters"));
+    Validation.Add("ArtistId",
+        Validator.Range(1, double.MaxValue, "Artist ID is Required"));
+    Validation.Add("ReleaseYear",
+        Validator.Required("Release Year is required"),
+        Validator.Range(1950, DateTime.Today.Year, $"Release Year must be between 1950 and {DateTime.Today.Year}"),
+        Validator.Integer("Release Year must be a number"));
+    Validation.Add("ReleaseLabel",
+        Validator.StringLength(50, 0, "Release Label is limited to 50 characters"));
 }
 
 @section banner {
@@ -56,84 +35,105 @@
 @if (IsPost)
 {
     //get form fields
-    artistId = Request.Form["ArtistId"];
-    albumName = Request.Form["AlbumName"];
+    title = Request.Form["Title"];
+    artistId = Request.Form["ArtistList"];
     releaseYear = Request.Form["ReleaseYear"];
-    recordLabel = Request.Form["RecordLabel"];
+    releaseLabel = Request.Form["ReleaseLabel"];
+    var theButton = Request.Form["FormButton"];
 
-    if (theButton.Equals("add", StringComparison.OrdinalIgnoreCase))
+    if (theButton.Equals("Clear", StringComparison.OrdinalIgnoreCase))
     {
-        //check if form fields are valid
+        title = "";
+        artistId = "0";
+        releaseYear = "";
+        releaseLabel = "";
+    }
+    else
+    {
         if (Validation.IsValid())
         {
-            //trycatch db query
             try
             {
-                var createAlbum = "INSERT INTO Albums (Title, ArtistId, ReleaseYear, ReleaseLabel) VALUES(@0, @1, @2, @3)";
-                db.Execute(createAlbum, albumName,
+                var insert = "INSERT INTO Albums "
+                    + "(Title, ArtistId, ReleaseYear, ReleaseLabel) "
+                    + "VALUES(@0, @1, @2, @3)";
+                db.Execute(insert, title,
                     artistId.Equals("0") ? null : artistId,
-                    releaseYear,
-                    string.IsNullOrEmpty(recordLabel) ? null : recordLabel);
-                //successful message
+                    releaseLabel,
+                    string.IsNullOrEmpty(releaseYear));
                 <div class="col-12 text-center">
-                    <p style="color:green;">
-                        @albumName has been added
+                    <p style="color:green">
+                        Album has been ADDED
                     </p>
                 </div>
             }
             catch (Exception ex)
             {
                 <div class="col-12 text-center">
-                    <p style="color:firebrick;">
-                        Error: @ex.Message
+                    <p style="color:firebrick; font-size:large">
+                        Processing Error: @ex.Message
                     </p>
                 </div>
             }
         }
     }
-    else
-    {
-        artistId = "0";
-        albumName = "";
-        releaseYear = "";
-        recordLabel = "";
-    }
+
 }
 
+@Html.ValidationSummary();
 <fieldset>
     <legend>Add an Album</legend>
-    <form id="theform" method="post">
-        <div class="row offset-1">
-            <label class="label" for="AlbumName">Title: </label>
-            <span>@Html.TextBox("Title", albumName)</span>
-            @Html.ValidationMessage("AlbumName")
+    <form id="theForm" action="" method="post">
+        <div class="row row-cols-2">
+            @* title *@
+            <div class="col text-right">
+                <label id="lblTitle" for="Title">Title</label>
+            </div>
+            <div class="col text-left">
+                <input type="text" name="Title" value="@title" />
+            </div><br />
+            @* artist *@
+            <div class="col text-right">
+                <label id="lblArtistList" for="ArtistList">Artist</label>
+            </div>
+            <div class="col text-left">
+                <select name="ArtistList">
+                    <option value="0">select...</option>
+                    @foreach (var acollectionrow in artistList)
+                    {
+                        if (acollectionrow.ArtistList.ToString() == artistId)
+                        {
+                            <option value="@acollectionrow[0]" selected>@acollectionrow[1]</option>
+                        }
+                        else
+                        {
+                            <option value="@acollectionrow[0]">@acollectionrow[1]</option>
+                        }
+                    }
+                </select>
+            </div><br />
+            @* year *@
+            <div class="col text-right">
+                <label id="lblReleaseYear" for="Releaseyear">Release Year</label>
+            </div>
+            <div class="col text-left">
+                <input type="text" name="ReleaseYear" value="@releaseYear" />
+            </div><br />
+            @* label *@
+            <div class="col text-right">
+                <label id="lblReleaseLabel" for="ReleaseLabel">Release Label</label>
+            </div>
+            <div class="col text-left">
+                <input type="text" name="ReleaseLabel" value="@releaseLabel" />
+            </div><br />
         </div>
-        <div class="row offset-1">
-            <label class="label" for="ArtistId">Artist: </label>
-            <span>@Html.DropDownList("ArtistId", artistsList)</span>
-            @Html.ValidationMessage("ArtistId")
-        </div>
-        <div class="row offset-1">
-            <label class="label" for="ReleaseYear">Year: </label>
-            <span>@Html.TextBox("ReleaseYear", releaseYear)</span>
-            @Html.ValidationMessage("ReleaseYear")
-        </div>
-        <div class="row offset-1">
-            <label class="label" for="RecordLabel">Label: </label>
-            <span>@Html.TextBox("RecordLabel", recordLabel)</span>
-            @Html.ValidationMessage("RecordLabel")
-        </div>
-
-        <div class="row offset-1">
-            <button type="submit" id="TheButton" name="TheButton"
-                    class="btn btn-primary" value="Add">
-                Add
-            </button>
-            <button type="submit" id="TheButton" name="TheButton" formnovalidate
-                    class="btn" value="Clear">
-                Clear
-            </button>
+        <div class="row">
+            <div class="col-12 text-center">
+                <input type="submit" id="FormButton" name="FormButton"
+                       class="btn btn-primary" value="Add" />
+                <input type="submit" id="FormButton" name="FormButton" formnovalidate
+                       class="btn" value="Clear" />
+            </div>
         </div>
     </form>
 </fieldset>
-@Html.ValidationSummary()
