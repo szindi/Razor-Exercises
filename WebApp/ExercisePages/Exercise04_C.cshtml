@@ -55,7 +55,7 @@
 {
     if (thebutton.Equals("backtosearch"))
     {
-        Response.Redirect("Exercise4_A.cshtml");
+        Response.Redirect("Exercise04_A.cshtml");
     }
 
     if (Validation.IsValid())
@@ -71,9 +71,9 @@
                             + "ReleaseLabel = @3 "
                             + "WHERE AlbumId = @4";
                 var rowcount = db.Execute(update,
-                    string.IsNullOrEmpty(title) ? null : title,
-                    artistid.Equals("0") ? null : artistid,
-                    string.IsNullOrEmpty(releaseyear) ? null : releaseyear,
+                    title,
+                    artistid,
+                    releaseyear,
                     string.IsNullOrEmpty(releaselabel) ? null : releaselabel,
                     albumid);
                 if (rowcount != 0)
@@ -143,12 +143,15 @@ else
         <div class="col text-left">
             <input type="text" name="Title" value="@title" />
         </div><br />
+        <div class="col text-right">
+            <label id="lblArtistId" for="ArtistId">Artist</label>
+        </div>
         <div class="col text-left">
-            <select name="ArtistList">
+            <select name="ArtistId">
                 <option value="0">select...</option>
                 @foreach (var acollectionrow in queryArtists)
                 {
-                    if (acollectionrow.SupplierID.ToString() == artistid)
+                    if (acollectionrow.ArtistId.ToString() == artistid)
                     {
                         <option value="@acollectionrow[0]" selected>@acollectionrow[1]</option>
                     }
@@ -177,10 +180,6 @@ else
             <button type="submit" name="theButton" id="theUpdate" class="btn btn-primary"
                     value="update">
                 Update
-            </button>&nbsp;&nbsp;&nbsp;
-            <button type="submit" name="theButton" id="theDiscontinue" class="btn btn-primary" formnovalidate
-                    value="discontinue">
-                Discontinue
             </button>&nbsp;&nbsp;&nbsp;
             <button type="submit" name="theButton" id="theDelete" class="btn btn-primary" formnovalidate
                     value="delete">
