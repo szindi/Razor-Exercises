@@ -7,10 +7,11 @@
     var db = Database.Open("CHINOOK");
     var partialsearchstring = "%" + albumsearch + "%";
 
-    var queryStatement = "SELECT AlbumId, title, ArtistId, ReleaseYear, ReleaseLabel "
-                        + "FROM Albums"
-                        + "WHERE AlbumId = @0";
-    var queryAlbums = db.Query(queryStatement, partialstringsearch);
+    var queryStatement = "SELECT AlbumId, Title, ArtistId, ReleaseYear, ReleaseLabel "
+                        + "FROM Albums "
+                        + "WHERE AlbumId = @0 "
+                        + "ORDER BY Title";
+    var queryAlbums = db.Query(queryStatement, partialsearchstring);
 }
 @section banner{<h1>@Page.Title</h1>}
 
