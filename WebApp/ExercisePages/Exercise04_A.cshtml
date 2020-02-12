@@ -2,42 +2,41 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Excercise 4 - Search");
 
-    var artistsearch = Request.Form["ArtistSearch"];
+    var albumsearch = Request.Form["AlbumSearch"];
 
     var db = Database.Open("CHINOOK");
-    var partialsearchstring = "%" + artistsearch + "%";
+    var partialsearchstring = "%" + albumsearch + "%";
 
-    var queryStatement = "SELECT ArtistId Name "
-                        + "FROM Artists "
-                        + "WHERE Name LIKE @0 "
-                        + "ORDER BY Name";
-    var queryArtists = db.Query(queryStatement, partialsearchstring);
+    var queryStatement = "SELECT AlbumId "
+                        + "FROM Albums "
+                        + "WHERE Title LIKE @0 ";
+    var queryAlbums = db.Query(queryStatement, partialsearchstring);
 }
 @section banner{<h1>@Page.Title</h1>}
 
 <form id="theForm" action="" method="post">
     <div class="col-sm-3">
-        <label id="forArtistSearch">Artist</label><br />
-        <input type="text" name="ArtistSearch" value="@artistsearch" /><br /><br />
+        <label id="forAlbumSearch">Album</label><br />
+        <input type="text" name="AlbumSearch" value="@albumsearch" /><br /><br />
         <button type="submit" class="btn btn-primary" name="Search" id="theSearch">Search</button>
     </div><br />
 </form>
 <div class="col-sm-8">
     @if (IsPost)
     {
-        if (artistsearch.IsEmpty())
+        if (albumsearch.IsEmpty())
         {
-            <p><strong><span style="color:firebrick">Enter an artist title (or partial title).</span></strong></p>
+            <p><strong><span style="color:firebrick">Enter an album title (or partial title).</span></strong></p>
         }
         else
         {
-            if (queryArtists.Count() == 0)
+            if (queryAlbums.Count() == 0)
             {
                 <p><strong><span style="color:firebrick">Nothing found for search argument.</span></strong></p>
             }
             else
             {
-                Response.Redirect("ProductWebGridDisplay.cshtml?search=" + artistsearch);
+                Response.Redirect("Exercise04_B.cshtml?search=" + albumsearch);
             }
         }
     }

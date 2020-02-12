@@ -1,3 +1,39 @@
 ﻿@{ 
+    Layout = "~/_Layout.cshtml";
+    Page.Title = string.Format("Exercise 4 - Albums");
 
+    var partialsearchstring = Request.QueryString["search"];
+    <p>A search was done with the following partial string for Album: @partialsearchstring</p>
+
+    if (string.IsNullOrEmpty(partialsearchstring))
+    {
+        Response.Redirect("Exercise04_a.cshtml");
+    }
+
+    var db = Database.Open("CHINOOK");
+    partialsearchstring = '%' + partialsearchstring + "%";
+    var queryStatement = "SELECT AlbumId, Title, Albums.ArtistId, ReleaseYear, ReleaseLabel, Name "
+                        + "FROM Albums "
+                        + "INNER JOIN Artists "
+                        + "ON Albums.ArtistId = Artists.ArtistId "
+                        + "WHERE Title LIKE @0 "
+                        + "ORDER BY Title, Name, ReleaseYear";
+    var queryAlbums = db.Query(queryStatement, partialsearchstring);
+
+    var grid = new WebGrid(queryAlbums);
 }
+@section banner {<h1>@Page.Title</h1>}
+<div class="offset-1">
+    <div class="col-11">
+        @grid.GetHtml("table table-bordered table-striped table-hover",
+        mode: WebGridPagerModes.All,
+        lastText: "Last",
+        firstText: "First",
+        columns: grid.Columns(
+            grid.Column(columnName: "Title", header: "Title"),
+            grid.Column(columnName: "Name", header: "Artist"),
+            grid.Column(columnName: "ReleaseYear", header: "Year"),
+            grid.Column(columnName: "ReleaseLabel", header: "Label"),
+            grid.Column(header: "", format: @<text><a href="~/ExercisePages/Exercise04_C.cshtml?albumid=@item.AlbumId">Edit</a></text>)))
+    </div>
+</div>
