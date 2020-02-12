@@ -1,139 +1,195 @@
-﻿@{
+﻿@{ 
     Layout = "~/_Layout.cshtml";
-    Page.Title = string.Format("Exercise 2: Database Query");
+    Page.title = string.Format("Exercise 4 - Edit");
 
-    //album variables
-    var title = "";
-    var artistId = "0";
-    var releaseYear = "";
-    var releaseLabel = "";
+    var aid = Request.QueryString["aid"];
+    if (aid.IsEmpty())
+    {
+        Response.Redirect("Exercise04_A.cshtml");
+    }
 
-    //database
-    var db = Database.Open("CHINOOK");
-    //get dropdown information
-    var artistQuery = "SELECT ArtistId, Name FROM Artists ORDER BY Name";
-    var artistList = db.Query(artistQuery);
+    var albumid = Request.Form["AlbumId"];
+    var title = Request.Form["Title"];
+    var artistid = Request.Form["ArtistId"];
+    var releaseyear = Request.Form["ReleaseYear"];
+    var releaselabel = Request.Form["ReleaseLabel"];
+    var thebutton = Request.Form["theButton"];
 
-    //Validation
+    var message = "";
+
     Validation.Add("Title",
         Validator.Required("Title is required"),
         Validator.StringLength(160, 0, "Title is limited to 160 characters"));
     Validation.Add("ArtistId",
-        Validator.Range(1, double.MaxValue, "Artist ID is Required"));
+        Validator.Integer("Aritst ID must be an integer"),
+        Validator.Range(1, double.MaxValue, "Artist ID is required"));
     Validation.Add("ReleaseYear",
-        Validator.Required("Release Year is required"),
-        Validator.Range(1950, DateTime.Today.Year, $"Release Year must be between 1950 and {DateTime.Today.Year}"),
-        Validator.Integer("Release Year must be a number"));
+        Validator.Integer("Realease year must be an integer"),
+        Validator.Required("Release year is required"),
+        Validator.Range(1950, DateTime.Today.Year, $"Release Year must be between 1950 and {DateTime.Today.Year}"));
     Validation.Add("ReleaseLabel",
         Validator.StringLength(50, 0, "Release Label is limited to 50 characters"));
+
+    if (!IsPost)
+    {
+        albumid = aid;
+    }
+
+    var db = Database.Open("CHINOOK");
+    var artistStatement = "SELECT ArtistId, Name "
+                        + "FROM Artists "
+                        + "ORDER BY Name";
+    var queryArtists = db.Query(artistStatement);
+
+    var albumStatement = "SELECT AlbumId, Title, ArtistId, ReleaseYear, ReleaseLabel "
+                        + "FROM Albums "
+                        + "WHERE AlbumId = @0";
+    var queryAlbums = db.QuerySingle(albumStatement, aid);
 }
 
-@section banner {
+@section banner{
     <h1>@Page.Title</h1>
 }
 
 @if (IsPost)
 {
-    //get form fields
-    title = Request.Form["Title"];
-    artistId = Request.Form["ArtistList"];
-    releaseYear = Request.Form["ReleaseYear"];
-    releaseLabel = Request.Form["ReleaseLabel"];
-    var theButton = Request.Form["FormButton"];
-
-    if (theButton.Equals("Clear", StringComparison.OrdinalIgnoreCase))
+    if (thebutton.Equals("backtosearch"))
     {
-        title = "";
-        artistId = "0";
-        releaseYear = "";
-        releaseLabel = "";
+        Response.Redirect("Exercise4_A.cshtml");
     }
-    else
+
+    if (Validation.IsValid())
     {
-        if (Validation.IsValid())
+        try
         {
-            try
+            if (thebutton.Equals("update"))
             {
-                var insert = "INSERT INTO Albums "
-                    + "(Title, ArtistId, ReleaseYear, ReleaseLabel) "
-                    + "VALUES(@0, @1, @2, @3)";
-                db.Execute(insert, title,
-                    artistId.Equals("0") ? null : artistId,
-                    releaseLabel,
-                    string.IsNullOrEmpty(releaseYear));
-                <div class="col-12 text-center">
-                    <p style="color:green">
-                        Album has been ADDED
-                    </p>
-                </div>
+                var update = "UPDATE Albums SET "
+                            + "Title = @0, "
+                            + "ArtistId = @1, "
+                            + "ReleaseYear = @2, "
+                            + "ReleaseLabel = @3 "
+                            + "WHERE AlbumId = @4";
+                var rowcount = db.Execute(update,
+                    string.IsNullOrEmpty(title) ? null : title,
+                    artistid.Equals("0") ? null : artistid,
+                    string.IsNullOrEmpty(releaseyear) ? null : releaseyear,
+                    string.IsNullOrEmpty(releaselabel) ? null : releaselabel,
+                    albumid);
+                if (rowcount != 0)
+                {
+                    message = "Album has been UPDATED";
+                }
+                else
+                {
+                    message = "Album NOT found";
+                }
             }
-            catch (Exception ex)
+            else if (thebutton.Equals("delete"))
             {
-                <div class="col-12 text-center">
-                    <p style="color:firebrick; font-size:large">
-                        Processing Error: @ex.Message
-                    </p>
-                </div>
+                var delete = "DELETE Albums WHERE AlbumId = @0";
+                var rowcount = db.Execute(delete, albumid);
+                if (rowcount != 0)
+                {
+                    message = "Album has been DELETED";
+                }
+                else
+                {
+                    message = "Album NOT found";
+                }
             }
+            albumid = "";
+            title = "";
+            artistid = "0";
+            releaseyear = "";
+            releaselabel = "";
+        }
+        catch (Exception ex)
+        {
+            <div class="col-12 text-center">
+                <p style="color:firebrick; font-size:large">
+                    Processing Error: @ex.Message
+                </p>
+            </div>
         }
     }
-
 }
+else
+{
+    albumid = queryAlbums.AlbumId.ToString();
+    title = queryAlbums.Title;
+    artistid = queryAlbums.ArtistId == null ? "0" : queryAlbums.ArtistId.ToString();
+    releaseyear = queryAlbums.ReleaseYear == null ? "" : queryAlbums.ReleaseYear.ToString();
+    releaselabel = queryAlbums.ReleaseLabel;
+}
+@Html.ValidationSummary()
 
-@Html.ValidationSummary();
-<fieldset>
-    <legend>Add an Album</legend>
-    <form id="theForm" action="" method="post">
-        <div class="row row-cols-2">
-            @* title *@
-            <div class="col text-right">
-                <label id="lblTitle" for="Title">Title</label>
-            </div>
-            <div class="col text-left">
-                <input type="text" name="Title" value="@title" />
-            </div><br />
-            @* artist *@
-            <div class="col text-right">
-                <label id="lblArtistList" for="ArtistList">Artist</label>
-            </div>
-            <div class="col text-left">
-                <select name="ArtistList">
-                    <option value="0">select...</option>
-                    @foreach (var acollectionrow in artistList)
+<div class="col-12 text-center">
+    <p style="color:green">
+        @message
+    </p>
+</div>
+<form id="theForm" action="" method="post">
+    <div class="row row-cols-2">
+        <div class="col text-right">
+            <label id="lblAlbumId" for="AlbumId">Album ID</label>
+        </div>
+        <div class="col text-left">
+            <input type="text" name="AlbumId" value="@albumid" readonly />
+        </div><br />
+        <div class="col text-right">
+            <label id="lblTitle" for="Title">Title</label>
+        </div>
+        <div class="col text-left">
+            <input type="text" name="Title" value="@title" />
+        </div><br />
+        <div class="col text-left">
+            <select name="ArtistList">
+                <option value="0">select...</option>
+                @foreach (var acollectionrow in queryArtists)
+                {
+                    if (acollectionrow.SupplierID.ToString() == artistid)
                     {
-                        if (acollectionrow.ArtistId.ToString() == artistId)
-                        {
-                            <option value="@acollectionrow[0]" selected>@acollectionrow[1]</option>
-                        }
-                        else
-                        {
-                            <option value="@acollectionrow[0]">@acollectionrow[1]</option>
-                        }
+                        <option value="@acollectionrow[0]" selected>@acollectionrow[1]</option>
                     }
-                </select>
-            </div><br />
-            @* year *@
-            <div class="col text-right">
-                <label id="lblReleaseYear" for="Releaseyear">Release Year</label>
-            </div>
-            <div class="col text-left">
-                <input type="text" name="ReleaseYear" value="@releaseYear" />
-            </div><br />
-            @* label *@
-            <div class="col text-right">
-                <label id="lblReleaseLabel" for="ReleaseLabel">Release Label</label>
-            </div>
-            <div class="col text-left">
-                <input type="text" name="ReleaseLabel" value="@releaseLabel" />
-            </div><br />
+                    else
+                    {
+                        <option value="@acollectionrow[0]">@acollectionrow[1]</option>
+                    }
+                }
+            </select>
+        </div><br />
+        <div class="col text-right">
+            <label id="lblReleaseYear" for="ReleaseYear">Release Year</label>
         </div>
-        <div class="row">
-            <div class="col-12 text-center">
-                <input type="submit" id="FormButton" name="FormButton"
-                       class="btn btn-primary" value="Add" />
-                <input type="submit" id="FormButton" name="FormButton" formnovalidate
-                       class="btn" value="Clear" />
-            </div>
+        <div class="col text-left">
+            <input type="number" name="ReleaseYear" value="@releaseyear" step="1" />
+        </div><br />
+        <div class="col text-right">
+            <label id="lblReleaseLabel" for="ReleaseLabel">ReleaseLabel</label>
         </div>
-    </form>
-</fieldset>
+        <div class="col text-left">
+            <input type="text" name="ReleaseLabel" value="@releaselabel" />
+        </div><br />
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <button type="submit" name="theButton" id="theUpdate" class="btn btn-primary"
+                    value="update">
+                Update
+            </button>&nbsp;&nbsp;&nbsp;
+            <button type="submit" name="theButton" id="theDiscontinue" class="btn btn-primary" formnovalidate
+                    value="discontinue">
+                Discontinue
+            </button>&nbsp;&nbsp;&nbsp;
+            <button type="submit" name="theButton" id="theDelete" class="btn btn-primary" formnovalidate
+                    value="delete">
+                Delete Record
+            </button>&nbsp;&nbsp;&nbsp;
+            <button type="submit" name="theButton" id="theCancel" class="btn btn-primary" formnovalidate
+                    value="backtosearch">
+                Back to Search
+            </button>
+        </div>
+    </div>
+</form>
